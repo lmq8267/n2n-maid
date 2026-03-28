@@ -31,3 +31,6 @@ windows-sys = { version = "0.59.0", features = [
 
 [build-dependencies]
 tauri-build = { version = "2.0", features = [] }
+
+[target.'cfg(windows)'.build-dependencies]
+thunk-rs = { version = "0.3.3", features = ["win7"] }
