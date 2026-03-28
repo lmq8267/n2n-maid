@@ -4,12 +4,24 @@ fn main() {
     // - requireAdministrator：配置虚拟网卡/驱动更稳定（每次启动会弹 UAC）
     #[cfg(target_os = "windows")]
     {
-        let windows = tauri_build::WindowsAttributes::new()
+        // 初始化 thunk-rs 来兼容 Windows 7
+        thunk::thunk();
+        println!("已加载 Windows 7 兼容库");
+
+        // 配置 Windows 特有属性
+        let windows_attrs = tauri_build::WindowsAttributes::new()
             .app_manifest(include_str!("windows/app.manifest"));
-        let attrs = tauri_build::Attributes::new().windows_attributes(windows);
-        tauri_build::try_build(attrs).expect("恩兔酱构建失败：Windows 资源准备不成功");
+
+        let attrs = tauri_build::Attributes::new().windows_attributes(windows_attrs);
+
+        // 尝试构建 Tauri 应用
+        tauri_build::try_build(attrs)
+            .expect("恩兔酱构建失败：Windows 资源准备不成功");
     }
 
     #[cfg(not(target_os = "windows"))]
-    tauri_build::build()
+    {
+        // 非 Windows 系统直接构建
+        tauri_build::build();
+    }
 }
